@@ -7,8 +7,9 @@ from langchain.chains import ConversationChain
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 from langchain_groq import ChatGroq
 from langchain.prompts import PromptTemplate
+from langchain_community.chat_message_histories.upstash_redis import UpstashRedisChatMessageHistory
 
-#load_dotenv()
+load_dotenv()
 
 st.set_page_config(
     page_title = "Mr.KnowItAll",
@@ -22,7 +23,44 @@ st.set_page_config(
 
 groq_api_key = st.sidebar.text_input("Enter the GROQ API :")
 
-memory=ConversationBufferWindowMemory(k=10)
+i = 0
+
+with st.sidebar:
+
+    model = st.selectbox(
+        'Choose a model',
+        ['llama3-8b-8192', 'mixtral-8x7b-32768', 'gemma-7b-it', 'llama3-70b-8192']
+    )
+
+    new_chat = st.button(
+         label = "New Chat",
+         type="primary"
+         )
+    
+    reset = st.button(
+         label = "Reset",
+         type="primary"
+         )
+
+    if reset:
+        st.session_state.chat_history=[]
+
+    if new_chat:
+        st.session_state.chat_history=[]
+        i+=1
+        
+
+upstash_url = os.getenv("upstash_url")
+upstash_token = os.getenv("upstash_token")
+
+history = UpstashRedisChatMessageHistory(
+    url = upstash_url,
+    token = upstash_token,
+    session_id="chat"+str(i),
+    ttl=0
+)
+
+memory = ConversationBufferWindowMemory(k=10, chat_memory=history)
 
 st.title("Mr. KnowItAll")
 
@@ -41,21 +79,6 @@ else:
         with st.chat_message("assistant"):
             st.write(message["AI"])
 
-with st.sidebar:
-
-    model = st.selectbox(
-        'Choose a model',
-        ['llama3-8b-8192', 'mixtral-8x7b-32768', 'gemma-7b-it', 'llama3-70b-8192']
-    )
-
-    reset = st.button(
-         label = "Reset",
-         type="primary"
-         )
-
-    if reset:
-        st.session_state.chat_history=[]
-    
 
 if groq_api_key:
 

@@ -4,3 +4,4 @@ streamlit
 langchain
 langchain-groq
 wikipedia
+upstash_redis
