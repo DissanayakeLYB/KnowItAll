@@ -20,9 +20,6 @@ st.set_page_config(
     }
 )
 
-groq_api_key = os.getenv("groq_API")
-
-
 with st.sidebar:
 
     model = st.selectbox(
@@ -60,7 +57,7 @@ else:
 
 
 groq_chat = ChatGroq(
-    groq_api_key=groq_api_key, 
+    groq_api_key=os.getenv("groq_API"), 
     model_name=model
 )
 
