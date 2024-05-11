@@ -23,6 +23,7 @@ st.set_page_config(
 
 groq_api_key = os.getenv("groq_API")
 
+
 with st.sidebar:
 
     model = st.selectbox(
@@ -38,12 +39,10 @@ with st.sidebar:
     if reset:
         st.session_state.chat_history=[]
 
-        
-
-
 memory = ConversationBufferWindowMemory(k=10)
 
 st.title("Mr. KnowItAll")
+st.write("&copy; Lasith Dissanayake | 2024")
 
 input_message = st.chat_input("Ask from expert...")
 
@@ -88,4 +87,3 @@ if groq_api_key:
             st.write(response['response'])
 
 
-st.write("&copy; Lasith Dissanayake | 2024")
