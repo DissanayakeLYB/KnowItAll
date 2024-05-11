@@ -57,7 +57,7 @@ else:
 
 
 groq_chat = ChatGroq(
-    groq_api_key=os.getenv("groq_API"), 
+    groq_api_key=os.getenv("GROQ_API_KEY"), 
     model_name=model
 )
 
