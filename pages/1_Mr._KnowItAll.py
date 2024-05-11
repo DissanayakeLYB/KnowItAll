@@ -7,7 +7,6 @@ from langchain.chains import ConversationChain
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 from langchain_groq import ChatGroq
 from langchain.prompts import PromptTemplate
-from langchain_community.chat_message_histories.upstash_redis import UpstashRedisChatMessageHistory
 
 load_dotenv()
 
@@ -41,8 +40,8 @@ with st.sidebar:
 
 memory = ConversationBufferWindowMemory(k=10)
 
-st.title("Mr. KnowItAll")
 st.write("&copy; Lasith Dissanayake | 2024")
+st.title("Mr. KnowItAll")
 
 input_message = st.chat_input("Ask from expert...")
 
@@ -60,30 +59,28 @@ else:
             st.write(message["AI"])
 
 
-if groq_api_key:
+groq_chat = ChatGroq(
+    groq_api_key=groq_api_key, 
+    model_name=model
+)
 
-    groq_chat = ChatGroq(
-        groq_api_key=groq_api_key, 
-        model_name=model
-    )
-
-    conversation = ConversationChain(
-        llm=groq_chat,
-        memory=memory
-    )
+conversation = ConversationChain(
+    llm=groq_chat,
+    memory=memory
+)
 
 
-    if input_message:
+if input_message:
 
-        response = conversation(input_message)
-        message = {'human':input_message, 'AI':response['response']}
+    response = conversation(input_message)
+    message = {'human':input_message, 'AI':response['response']}
 
-        st.session_state.chat_history.append(message)
+    st.session_state.chat_history.append(message)
 
-        with st.chat_message("user"):
-            st.write(input_message)
+    with st.chat_message("user"):
+        st.write(input_message)
 
-        with st.chat_message("assistant"):    
-            st.write(response['response'])
+    with st.chat_message("assistant"):    
+        st.write(response['response'])
 
 
