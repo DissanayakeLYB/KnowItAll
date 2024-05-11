@@ -20,6 +20,8 @@ st.set_page_config(
     }
 )
 
+groq_api_key = st.sidebar.text_input("Enter the Groq API Key :")
+
 with st.sidebar:
 
     model = st.selectbox(
@@ -55,29 +57,29 @@ else:
         with st.chat_message("assistant"):
             st.write(message["AI"])
 
+if groq_api_key:
+    groq_chat = ChatGroq(
+        groq_api_key=groq_api_key, 
+        model_name=model
+    )
 
-groq_chat = ChatGroq(
-    groq_api_key=os.getenv("GROQ_API_KEY"), 
-    model_name=model
-)
-
-conversation = ConversationChain(
-    llm=groq_chat,
-    memory=memory
-)
+    conversation = ConversationChain(
+        llm=groq_chat,
+        memory=memory
+    )
 
 
-if input_message:
+    if input_message:
 
-    response = conversation(input_message)
-    message = {'human':input_message, 'AI':response['response']}
+        response = conversation(input_message)
+        message = {'human':input_message, 'AI':response['response']}
 
-    st.session_state.chat_history.append(message)
+        st.session_state.chat_history.append(message)
 
-    with st.chat_message("user"):
-        st.write(input_message)
+        with st.chat_message("user"):
+            st.write(input_message)
 
-    with st.chat_message("assistant"):    
-        st.write(response['response'])
+        with st.chat_message("assistant"):    
+            st.write(response['response'])
 
 
