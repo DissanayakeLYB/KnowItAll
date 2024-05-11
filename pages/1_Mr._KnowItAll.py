@@ -21,7 +21,7 @@ st.set_page_config(
     }
 )
 
-groq_api_key = st.sidebar.text_input("Enter the GROQ API :")
+groq_api_key = os.getenv("groq_API")
 
 i = 0
 
